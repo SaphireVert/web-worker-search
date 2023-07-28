@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 let array = []
 
-for (let index = 0; index < 1000000; index++) {
+for (let index = 0; index < 100; index++) {
     let result = ''
     const characters =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
