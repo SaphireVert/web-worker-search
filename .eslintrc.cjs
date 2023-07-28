@@ -45,5 +45,10 @@ module.exports = {
             'error',
             'never'
         ]
+    },
+    'settings': {
+        'react': {
+            'version': 'detect'
+        }
     }
 }
