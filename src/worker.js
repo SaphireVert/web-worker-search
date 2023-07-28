@@ -1,5 +1,8 @@
 onmessage = function(message) {
-    console.log('message', message.data)
+    
+    for (let index = 0; index < 10; index++) {
+        console.log('message', message.data, index)
+        postMessage(message.data)
+    }
 }
-postMessage('Never gonna see this message')
 

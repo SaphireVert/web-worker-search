@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 let array = []
 
@@ -19,10 +19,12 @@ console.dir(array)
 const myWorker = new Worker('./src/worker.js')
 myWorker.postMessage(array)
 
-myWorker.onmessage = function () {
-    console.log('Message received from worker')
-}
 function Home() {
+    const [values, setValues] = useState(['values'])
+    myWorker.onmessage = function (e) {
+        console.log('Message received from worker', e.data)
+        setValues(e.data)
+    }
     const runSort = async () => {}
 
     return (
@@ -31,7 +33,7 @@ function Home() {
           Run Sort
             </button>
             <div></div>
-            {array.map((x, i) => (
+            {values.map((x, i) => (
                 <>
                     <span key={i}>{x}</span>
                     <br />
