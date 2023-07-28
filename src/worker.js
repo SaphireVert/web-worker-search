@@ -1,5 +1,4 @@
 var list = []
-var isFree = true
 
 class WorkingClass {
     createWorker = (workerParams) => this.worker = new Worker(workerParams)

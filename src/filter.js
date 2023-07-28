@@ -1,4 +1,3 @@
-var isFree = true
 const bubleSort = input => {
     let swap
     let n = input.length - 1
@@ -25,7 +24,6 @@ function test(){
     )
     bubleSort(numbers)
     console.log()
-    isFree = true
 }
 
 
@@ -34,11 +32,7 @@ self.onmessage = function handleMessageFromMain(msg) {
     console.log('message from main received in worker:', msg.data)
 
     const bufTransferredFromMain = msg.data
-    console.log(isFree)
-    if (isFree) {
-        isFree = false
-        test()
-    }
+    test()
     // send buf back to main and transfer the underlying ArrayBuffer
     self.postMessage(bufTransferredFromMain, [bufTransferredFromMain])
 }
