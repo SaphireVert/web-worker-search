@@ -1,42 +1,21 @@
 var list = []
+var isFree = true
 
-function callWorker() {
-    const totoStr = 'totos'
-
-    let arrBuff = str2ab(totoStr)
+function callWorker(str, callback) {
+    console.log('enter in callWorker function')
+    let arrBuff = str2ab(str)
     const myWorker = new Worker('./filter.js')
     
     // listen for myWorker to transfer the buffer back to main
     myWorker.addEventListener('message', function handleMessageFromWorker(msg) {
-        console.log('message from worker received in main:', msg)
-    
-        const bufTransferredBackFromWorker = msg.data
-    
-        console.log(
-            'buf.byteLength in main AFTER transfer back from worker:',
-            bufTransferredBackFromWorker.byteLength
-        )
+        
     })
     
-    // create the buffer
-    const myBuf = new ArrayBuffer(8)
-    console.log(typeof myBuf)
-    
-    console.log(
-        'buf.byteLength in main BEFORE transfer to worker:',
-        myBuf.byteLength
-    )
-    
-    // send myBuf to myWorker and transfer the underlying ArrayBuffer
+    // send Buffer to myWorker and transfer the underlying ArrayBuffer
     myWorker.postMessage(arrBuff, [arrBuff])
-    
-    console.log(
-        'buf.byteLength in main AFTER transfer to worker:',
-        myBuf.byteLength
-    )
 }
 
-callWorker()
+callWorker('str')
 
 
 
@@ -62,11 +41,12 @@ onmessage = function (msg) {
         console.log('not String')
         list = data
     } else {
-        const myFilterWorker = new Worker('filter.js')
-        myFilterWorker.postMessage('hello')
-        myFilterWorker.onmessage = function(e) {
-            postMessage(e.data)
-        }
+        // const myFilterWorker = new Worker('filter.js')
+        // myFilterWorker.postMessage('hello')
+        // myFilterWorker.onmessage = function(e) {
+        //     postMessage('e.data')
+        // }
+        callWorker('tot',()=>postMessage('e.data'))
         // myFilterWorker.terminate()
         // const filteredList = list.filter(x=>x.includes(data)).slice(0,10)
         // postMessage('filteredList')
