@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 
 let array = []
 
-for (let index = 0; index < 100; index++) {
+for (let index = 0; index < 10; index++) {
     let result = ''
     const characters =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -44,7 +44,7 @@ for (let index = 0; index < 100; index++) {
 
 
 const myWorker = new Worker('./src/worker.js')
-// myWorker.postMessage(array)
+myWorker.postMessage(array)
 
 // myWorker.postMessage(arrBuff, [arrBuff])
 function Home() {

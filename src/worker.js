@@ -1,4 +1,4 @@
-var list = []
+var array = []
 
 class WorkingClass {
     createWorker = (workerParams) => this.worker = new Worker(workerParams)
@@ -9,8 +9,13 @@ class WorkingClass {
     }
     postMessage = (arg1, arg2)=> this.worker.postMessage(arg1, arg2)
     addEventListener = (callback)=>this.worker.addEventListener('message', (msg) => {
-        callback(msg)
-        this.worker.terminate()
+        console.log(msg.data)
+        if (msg.data.type === 'array') {
+            callback(msg)
+        } else {
+            console.log(typeof msg.data)
+            this.worker.terminate()
+        }
     })
 
     constructor(file){
@@ -20,9 +25,17 @@ class WorkingClass {
 
 const workerNest = new WorkingClass('./filter.js')
 
-function callWorker(str, callback) {
+function callWorker(str, arr, callback) {
     console.log('enter in callWorker function')
-    let arrBuff = str2ab(str)
+    console.log(str)
+    console.log(arr)
+    let concatened = {
+        query:JSON.stringify(str),
+        array:JSON.stringify(arr)
+    }
+    console.log(concatened)
+    concatened = JSON.stringify(concatened)
+    let arrBuff = str2ab(concatened)
     workerNest.terminateWorker()
     workerNest.createWorker('./filter.js')
     workerNest.addEventListener(callback)
@@ -35,16 +48,21 @@ callWorker('str', (e) => postMessage(ab2str(e.data)))
 
 
 function str2ab(str) {
+    console.time()
     var buf = new ArrayBuffer(str.length * 2) // 2 bytes for each char
     var bufView = new Uint16Array(buf)
     for (var i = 0, strLen = str.length; i < strLen; i++) {
         bufView[i] = str.charCodeAt(i)
     }
+    console.timeEnd()
     return buf
 }
 
 function ab2str(buf) {
-    return String.fromCharCode.apply(null, new Uint16Array(buf))
+    console.time()
+    const results = String.fromCharCode(...(new Uint16Array(buf)))
+    console.timeEnd()
+    return results
 }
 
 
@@ -54,12 +72,11 @@ onmessage = function (msg) {
     console.log(data)
     if(typeof data !== 'string'){
         console.log('not String')
-        list = data
+        array = data
+        callWorker('', JSON.stringify(msg.data), (e) => this.postMessage(ab2str(e.data)))
     } else {
-        callWorker(msg.data, (e) => postMessage(ab2str(e.data)))
+        callWorker(msg.data, array, (e) => this.postMessage(ab2str(e.data)))
     }
-    console.time()
-    console.timeEnd()
 
 }
 

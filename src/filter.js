@@ -32,7 +32,10 @@ self.onmessage = function handleMessageFromMain(msg) {
     console.log('message from main received in worker:', msg.data)
 
     const bufTransferredFromMain = msg.data
-    test()
+    // test()
+
     // send buf back to main and transfer the underlying ArrayBuffer
+    postMessage({type: 'array', data: bufTransferredFromMain})
     self.postMessage(bufTransferredFromMain, [bufTransferredFromMain])
+
 }
