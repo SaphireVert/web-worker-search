@@ -1,6 +1,22 @@
 var list = []
 var isFree = true
 
+class WorkingClass {
+    createWorker = (workerParams) => this.worker = new Worker(workerParams)
+    terminateWorker = ()=> this.worker.terminate()
+    postMessage = (arg1, arg2)=> this.worker.postMessage(arg1, arg2)
+    addEventListener = (callback)=>this.addEventListener('message', (msg) => {
+        callback(msg)
+        this.terminate()
+    })
+
+    constructor(file){
+        this.file = file
+    }
+}
+
+const workerNest = new WorkingClass('./filter.js')
+
 function callWorker(str, callback) {
     console.log('enter in callWorker function')
     let arrBuff = str2ab(str)
