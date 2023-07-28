@@ -9,7 +9,12 @@ function callWorker(str, callback) {
     // listen for myWorker to transfer the buffer back to main
     myWorker.addEventListener('message', (msg) => {
         callback(msg)
+        myWorker.terminate()
     })
+
+    const terminate = () => {
+        myWorker.terminate()
+    }
     
     // send Buffer to myWorker and transfer the underlying ArrayBuffer
     myWorker.postMessage(arrBuff, [arrBuff])
@@ -37,12 +42,16 @@ function ab2str(buf) {
 
 onmessage = function (msg) {
     let data = msg.data
+    console.log(data)
     if(typeof data !== 'string'){
         console.log('not String')
         list = data
     } else {
         callWorker(msg.data, (e) => postMessage(ab2str(e.data)))
     }
+    console.time()
+    console.timeEnd()
+
 }
 
 
