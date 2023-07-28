@@ -3,11 +3,15 @@ var isFree = true
 
 class WorkingClass {
     createWorker = (workerParams) => this.worker = new Worker(workerParams)
-    terminateWorker = ()=> this.worker.terminate()
+    terminateWorker = ()=> {
+        if (this.worker) {
+            this.worker.terminate()
+        }
+    }
     postMessage = (arg1, arg2)=> this.worker.postMessage(arg1, arg2)
-    addEventListener = (callback)=>this.addEventListener('message', (msg) => {
+    addEventListener = (callback)=>this.worker.addEventListener('message', (msg) => {
         callback(msg)
-        this.terminate()
+        this.worker.terminate()
     })
 
     constructor(file){
@@ -20,20 +24,10 @@ const workerNest = new WorkingClass('./filter.js')
 function callWorker(str, callback) {
     console.log('enter in callWorker function')
     let arrBuff = str2ab(str)
-    const myWorker = new Worker('./filter.js')
-    
-    // listen for myWorker to transfer the buffer back to main
-    myWorker.addEventListener('message', (msg) => {
-        callback(msg)
-        myWorker.terminate()
-    })
-
-    const terminate = () => {
-        myWorker.terminate()
-    }
-    
-    // send Buffer to myWorker and transfer the underlying ArrayBuffer
-    myWorker.postMessage(arrBuff, [arrBuff])
+    workerNest.terminateWorker()
+    workerNest.createWorker('./filter.js')
+    workerNest.addEventListener(callback)
+    workerNest.postMessage(arrBuff, [arrBuff])
 }
 
 callWorker('str', (e) => postMessage(ab2str(e.data)))
