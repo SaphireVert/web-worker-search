@@ -29,7 +29,7 @@ onmessage = function (msg) {
         console.log('it is a string')
         console.log(list)
         console.log(data)
-        const filteredList = list.filter(x=>x.includes(data))
+        const filteredList = list.filter(x=>x.includes(data)).slice(0,10)
         postMessage(filteredList)
     }
 }
