@@ -7,8 +7,8 @@ function callWorker(str, callback) {
     const myWorker = new Worker('./filter.js')
     
     // listen for myWorker to transfer the buffer back to main
-    myWorker.addEventListener('message', function handleMessageFromWorker(msg) {
-        
+    myWorker.addEventListener('message', (msg) => {
+        callback(msg)
     })
     
     // send Buffer to myWorker and transfer the underlying ArrayBuffer
@@ -46,7 +46,7 @@ onmessage = function (msg) {
         // myFilterWorker.onmessage = function(e) {
         //     postMessage('e.data')
         // }
-        callWorker('tot',()=>postMessage('e.data'))
+        callWorker('tot', (e) => postMessage(e.data))
         // myFilterWorker.terminate()
         // const filteredList = list.filter(x=>x.includes(data)).slice(0,10)
         // postMessage('filteredList')
