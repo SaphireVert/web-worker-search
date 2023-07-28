@@ -1,51 +1,59 @@
 var list = []
-// listen for main to transfer the buffer to myWorker
-// self.onmessage = function handleMessageFromMain(msg) {
-//     console.log('message from main received in worker:', msg)
 
-//     const bufTransferredFromMain = msg.data
+function callWorker() {
+    const totoStr = 'totos'
 
-//     console.log(
-//         'buf.byteLength in worker BEFORE transfer back to main:',
-//         bufTransferredFromMain.byteLength,
-//     )
-
-//     // send buf back to main and transfer the underlying ArrayBuffer
-//     self.postMessage(bufTransferredFromMain, [bufTransferredFromMain])
-
-//     console.log(
-//         'buf.byteLength in worker AFTER transfer back to main:',
-//         bufTransferredFromMain.byteLength,
-//     )
-// }
-
-const bubleSort = input => {
-    let swap
-    let n = input.length - 1
-    const sortedArray = input.slice()
-    do {
-        swap = false
-        for (let index = 0; index < n; index += 1) {
-            if (sortedArray[index] > sortedArray[index + 1]) {
-                const tmp = sortedArray[index]
-                sortedArray[index] = sortedArray[index + 1]
-                sortedArray[index + 1] = tmp
-                swap = true
-            }
-        }
-        n -= 1
-    } while (swap)
-
-    return sortedArray
-}
-
-function test(){
-    const numbers = [...Array(50000)].map(() =>
-        Math.floor(Math.random() * 1000000)
+    let arrBuff = str2ab(totoStr)
+    const myWorker = new Worker('./filter.js')
+    
+    // listen for myWorker to transfer the buffer back to main
+    myWorker.addEventListener('message', function handleMessageFromWorker(msg) {
+        console.log('message from worker received in main:', msg)
+    
+        const bufTransferredBackFromWorker = msg.data
+    
+        console.log(
+            'buf.byteLength in main AFTER transfer back from worker:',
+            bufTransferredBackFromWorker.byteLength
+        )
+    })
+    
+    // create the buffer
+    const myBuf = new ArrayBuffer(8)
+    console.log(typeof myBuf)
+    
+    console.log(
+        'buf.byteLength in main BEFORE transfer to worker:',
+        myBuf.byteLength
     )
-    bubleSort(numbers)
-    console.log()
+    
+    // send myBuf to myWorker and transfer the underlying ArrayBuffer
+    myWorker.postMessage(arrBuff, [arrBuff])
+    
+    console.log(
+        'buf.byteLength in main AFTER transfer to worker:',
+        myBuf.byteLength
+    )
 }
+
+callWorker()
+
+
+
+
+function str2ab(str) {
+    var buf = new ArrayBuffer(str.length * 2) // 2 bytes for each char
+    var bufView = new Uint16Array(buf)
+    for (var i = 0, strLen = str.length; i < strLen; i++) {
+        bufView[i] = str.charCodeAt(i)
+    }
+    return buf
+}
+
+function ab2str(buf) {
+    return String.fromCharCode.apply(null, new Uint16Array(buf))
+}
+
 
 
 onmessage = function (msg) {
@@ -54,11 +62,16 @@ onmessage = function (msg) {
         console.log('not String')
         list = data
     } else {
-        console.log('it is a string')
-        console.log(list)
-        console.log(data)
-        test()
-        const filteredList = list.filter(x=>x.includes(data)).slice(0,10)
-        postMessage(filteredList)
+        const myFilterWorker = new Worker('filter.js')
+        myFilterWorker.postMessage('hello')
+        myFilterWorker.onmessage = function(e) {
+            postMessage(e.data)
+        }
+        // myFilterWorker.terminate()
+        // const filteredList = list.filter(x=>x.includes(data)).slice(0,10)
+        // postMessage('filteredList')
     }
 }
+
+
+
