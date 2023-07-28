@@ -15,7 +15,7 @@ function callWorker(str, callback) {
     myWorker.postMessage(arrBuff, [arrBuff])
 }
 
-callWorker('str')
+callWorker('str', (e) => postMessage(ab2str(e.data)))
 
 
 
@@ -41,15 +41,7 @@ onmessage = function (msg) {
         console.log('not String')
         list = data
     } else {
-        // const myFilterWorker = new Worker('filter.js')
-        // myFilterWorker.postMessage('hello')
-        // myFilterWorker.onmessage = function(e) {
-        //     postMessage('e.data')
-        // }
-        callWorker('tot', (e) => postMessage(e.data))
-        // myFilterWorker.terminate()
-        // const filteredList = list.filter(x=>x.includes(data)).slice(0,10)
-        // postMessage('filteredList')
+        callWorker(msg.data, (e) => postMessage(ab2str(e.data)))
     }
 }
 
