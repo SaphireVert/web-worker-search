@@ -11,7 +11,8 @@ class WorkingClass {
     addEventListener = (callback)=>this.worker.addEventListener('message', (msg) => {
         console.log(msg.data)
         if (msg.data.type === 'array') {
-            callback(msg)
+            console.log(msg.data.data)
+            callback(msg.data.data)
         } else {
             console.log(typeof msg.data)
             this.worker.terminate()
@@ -30,7 +31,7 @@ function callWorker(str, arr, callback) {
     console.log(str)
     console.log(arr)
     let concatened = {
-        query:JSON.stringify(str),
+        query:str,
         array:JSON.stringify(arr)
     }
     console.log(concatened)
@@ -73,9 +74,9 @@ onmessage = function (msg) {
     if(typeof data !== 'string'){
         console.log('not String')
         array = data
-        callWorker('', JSON.stringify(msg.data), (e) => this.postMessage(ab2str(e.data)))
+        callWorker('', msg.data, (data) => this.postMessage(data))
     } else {
-        callWorker(msg.data, array, (e) => this.postMessage(ab2str(e.data)))
+        callWorker(msg.data, array, (data) => this.postMessage(data))
     }
 
 }

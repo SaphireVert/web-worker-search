@@ -1,3 +1,24 @@
+function encode(str) {
+    console.time()
+    var buf = new ArrayBuffer(str.length * 2) // 2 bytes for each char
+    var bufView = new Uint16Array(buf)
+    for (var i = 0, strLen = str.length; i < strLen; i++) {
+        bufView[i] = str.charCodeAt(i)
+    }
+    console.timeEnd()
+    return buf
+}
+
+function decode(buf) {
+    console.time()
+    const results = String.fromCharCode(...(new Uint16Array(buf)))
+    console.timeEnd()
+    return results
+}
+
+
+
+
 const bubleSort = input => {
     let swap
     let n = input.length - 1
@@ -32,10 +53,18 @@ self.onmessage = function handleMessageFromMain(msg) {
     console.log('message from main received in worker:', msg.data)
 
     const bufTransferredFromMain = msg.data
-    // test()
+    let realArray = JSON.parse(decode(bufTransferredFromMain))
 
+    console.log(realArray)
+    let parsedArray = JSON.parse(realArray.array)
+    // parsedArray = JSON.parse(realArray.array)
+    console.log(parsedArray)
+    console.log(realArray.query)
+    let results = parsedArray.filter(x=>x.includes(realArray.query))
+    console.log(results)
+    // test()
     // send buf back to main and transfer the underlying ArrayBuffer
-    postMessage({type: 'array', data: bufTransferredFromMain})
+    postMessage({type: 'array', data: results})
     self.postMessage(bufTransferredFromMain, [bufTransferredFromMain])
 
 }

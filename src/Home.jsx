@@ -52,7 +52,7 @@ function Home() {
     myWorker.onmessage = function (e) {
         console.log('Message received from worker: ', e.data)
         console.log(e.data)
-        // setValues(e.data)
+        setValues(e.data)
     }
     const runSort = async () => {}
     return (
