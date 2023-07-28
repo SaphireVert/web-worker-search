@@ -14,10 +14,36 @@ for (let index = 0; index < 10000; index++) {
     }
     array.push(result)
 }
-console.dir(array)
-const myWorker = new Worker('./src/worker.js')
-myWorker.postMessage(array)
 
+const myWorker = new Worker('./src/worker.js')
+
+// listen for myWorker to transfer the buffer back to main
+myWorker.addEventListener('message', function handleMessageFromWorker(msg) {
+    console.log('message from worker received in main:', msg)
+
+    const bufTransferredBackFromWorker = msg.data
+
+    console.log(
+        'buf.byteLength in main AFTER transfer back from worker:',
+        bufTransferredBackFromWorker.byteLength
+    )
+})
+
+// create the buffer
+const myBuf = new ArrayBuffer(8)
+
+console.log(
+    'buf.byteLength in main BEFORE transfer to worker:',
+    myBuf.byteLength
+)
+
+// send myBuf to myWorker and transfer the underlying ArrayBuffer
+myWorker.postMessage(myBuf, [myBuf])
+
+console.log(
+    'buf.byteLength in main AFTER transfer to worker:',
+    myBuf.byteLength
+)
 
 function Home() {
     const [values, setValues] = useState(['values'])
@@ -25,17 +51,17 @@ function Home() {
         console.log('Message received from worker', e.data)
         setValues(e.data)
     }
-    console.log(values)
     const runSort = async () => {}
     return (
         <>
             <input
                 type="text"
-                onChange={(x) => {
-                    myWorker.postMessage({
-                        array: array,
-                        searchEspression: x.target.value,
-                    })}
+                onChange={() => {
+                    // myWorker.postMessage('let\'s go', {
+                    //     array: array,
+                    //     searchEspression: x.target.value,
+                    // })}
+                    myWorker.postMessage('let\'s go', [myBuf])}
                 }
             />
             <button type="button" onClick={runSort}>

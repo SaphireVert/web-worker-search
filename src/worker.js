@@ -1,13 +1,19 @@
-onmessage = function(message) {
-    let data = message.data
-    let array = data.array
-    let searchEspression = data.searchEspression
-    // for (let index = 0; index < 10; index++) {
-    //     console.log('message', data, index)
-    //     postMessage(data)
-    // }
-    console.log('worker.js', array)
-    let results = array.filter(x=>x.includes(searchEspression))
-    postMessage(results)
-}
+// listen for main to transfer the buffer to myWorker
+self.onmessage = function handleMessageFromMain(msg) {
+    console.log('message from main received in worker:', msg)
 
+    const bufTransferredFromMain = msg.data
+
+    console.log(
+        'buf.byteLength in worker BEFORE transfer back to main:',
+        bufTransferredFromMain.byteLength,
+    )
+
+    // send buf back to main and transfer the underlying ArrayBuffer
+    self.postMessage(bufTransferredFromMain, [bufTransferredFromMain])
+
+    console.log(
+        'buf.byteLength in worker AFTER transfer back to main:',
+        bufTransferredFromMain.byteLength,
+    )
+}
