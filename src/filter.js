@@ -44,24 +44,19 @@ function test(){
         Math.floor(Math.random() * 1000000)
     )
     bubleSort(numbers)
-    console.log()
 }
 
 
 
 self.onmessage = function handleMessageFromMain(msg) {
-    console.log('message from main received in worker:', msg.data)
 
     const bufTransferredFromMain = msg.data
     let realArray = JSON.parse(decode(bufTransferredFromMain))
 
-    console.log(realArray)
     let parsedArray = JSON.parse(realArray.array)
     // parsedArray = JSON.parse(realArray.array)
-    console.log(parsedArray)
-    console.log(realArray.query)
     let results = parsedArray.filter(x=>x.includes(realArray.query))
-    console.log(results)
+    results.splice(0,10)
     // test()
     // send buf back to main and transfer the underlying ArrayBuffer
     postMessage({type: 'array', data: results})

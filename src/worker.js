@@ -9,12 +9,9 @@ class WorkingClass {
     }
     postMessage = (arg1, arg2)=> this.worker.postMessage(arg1, arg2)
     addEventListener = (callback)=>this.worker.addEventListener('message', (msg) => {
-        console.log(msg.data)
         if (msg.data.type === 'array') {
-            console.log(msg.data.data)
             callback(msg.data.data)
         } else {
-            console.log(typeof msg.data)
             this.worker.terminate()
         }
     })
@@ -27,14 +24,10 @@ class WorkingClass {
 const workerNest = new WorkingClass('./filter.js')
 
 function callWorker(str, arr, callback) {
-    console.log('enter in callWorker function')
-    console.log(str)
-    console.log(arr)
     let concatened = {
         query:str,
         array:JSON.stringify(arr)
     }
-    console.log(concatened)
     concatened = JSON.stringify(concatened)
     let arrBuff = str2ab(concatened)
     workerNest.terminateWorker()
@@ -70,9 +63,7 @@ function ab2str(buf) {
 
 onmessage = function (msg) {
     let data = msg.data
-    console.log(data)
     if(typeof data !== 'string'){
-        console.log('not String')
         array = data
         callWorker('', msg.data, (data) => this.postMessage(data))
     } else {
