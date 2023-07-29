@@ -12,28 +12,19 @@
 
 
 function decode(buf) {
-    console.time()
     let results = ''
     const bufArr = new Uint16Array(buf)
-    // const test = String.fromCharCode(...(new Uint16Array(buf)))
-    
-    
-    // let cuttedBuff = bufArr.slice(0,10)
-    // results = String.fromCharCode(...cuttedBuff)
-    // console.log(bufArr.length)
     const gap = 10000
     const bigIterrations = Math.floor(bufArr.length/gap)
     const smallIterrations = bufArr.length % gap
+    console.time()
     for (let index = 0; index < bigIterrations*gap ; index+=gap) {
         results += String.fromCharCode(...bufArr.slice(index, index+gap))
-        // console.log('bufArr', bufArr.slice(index, index+gap))
-        // console.log('bufArr')
     }
+    console.timeEnd()
     const startValue = bigIterrations * gap
-    // console.log('bufArr', bufArr.slice(startValue, startValue+smallIterrations))
     results += String.fromCharCode(...bufArr.slice(startValue, startValue+smallIterrations))
 
-    console.timeEnd()
     return results
 }
 
