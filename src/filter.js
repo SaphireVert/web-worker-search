@@ -61,7 +61,9 @@ self.onmessage = function handleMessageFromMain(msg) {
 
     let parsedArray = JSON.parse(realArray.array)
     // parsedArray = JSON.parse(realArray.array)
+    console.time()
     let results = parsedArray.filter(x=>x.includes(realArray.query)).splice(0,10)
+    console.timeEnd()
     console.log('oui c\'est passé', results)
     // test()
     // send buf back to main and transfer the underlying ArrayBuffer
