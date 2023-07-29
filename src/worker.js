@@ -9,6 +9,7 @@ class WorkingClass {
     }
     postMessage = (arg1, arg2)=> this.worker.postMessage(arg1, arg2)
     addEventListener = (callback)=>this.worker.addEventListener('message', (msg) => {
+        console.log(msg.data)
         if (msg.data.type === 'array') {
             callback(msg.data.data)
         } else {
@@ -24,13 +25,13 @@ async function doAll(callback, str, arr){
     workerNest.terminateWorker()
     let concatened = {
         query:str,
-        array:JSON.stringify(arr)
+        array:arr
     }
-    concatened = JSON.stringify(concatened)
-    let arrBuff = str2ab(concatened)
+    // concatened = JSON.stringify(concatened)
+    // let arrBuff = str2ab(concatened)
     workerNest.createWorker('./filter.js')
     workerNest.addEventListener(callback)
-    workerNest.postMessage(arrBuff, [arrBuff])
+    workerNest.postMessage(concatened)
 }
 
 const workerNest = new WorkingClass('./filter.js')
