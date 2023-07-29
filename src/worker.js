@@ -20,22 +20,29 @@ class WorkingClass {
         this.file = file
     }
 }
-
-const workerNest = new WorkingClass('./filter.js')
-
-function callWorker(str, arr, callback) {
+async function doAll(callback, str, arr){
+    workerNest.terminateWorker()
     let concatened = {
         query:str,
         array:JSON.stringify(arr)
     }
     concatened = JSON.stringify(concatened)
     let arrBuff = str2ab(concatened)
-    workerNest.terminateWorker()
     workerNest.createWorker('./filter.js')
     workerNest.addEventListener(callback)
     workerNest.postMessage(arrBuff, [arrBuff])
 }
 
+const workerNest = new WorkingClass('./filter.js')
+
+async function callWorker(str, arr, callback) {
+    
+    doAll(callback, str, arr)
+    
+}
+
+
+console.log('en dehors de tout ça')
 callWorker('str', (e) => postMessage(ab2str(e.data)))
 
 

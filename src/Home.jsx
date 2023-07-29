@@ -59,7 +59,7 @@ function Home() {
         <>
             <input
                 type="text"
-                onChange={(x) => {
+                onChange={async (x) => {
                     myWorker.postMessage(x.target.value)
                 }
                 }
