@@ -43,7 +43,7 @@ async function callWorker(str, arr, callback) {
 
 
 console.log('en dehors de tout ça')
-callWorker('str', (e) => postMessage(ab2str(e.data)))
+// callWorker('str', (e) => postMessage(ab2str(e.data)))
 
 
 
@@ -59,12 +59,13 @@ function str2ab(str) {
     return buf
 }
 
-function ab2str(buf) {
-    console.time()
-    const results = String.fromCharCode(...(new Uint16Array(buf)))
-    console.timeEnd()
-    return results
-}
+// function ab2str(buf) {
+//     console.time()
+//     const results = String.fromCharCode(...(new Uint16Array(buf)))
+//     console.log('trad---------------', new Uint16Array(buf).toString())
+//     console.timeEnd()
+//     return results
+// }
 
 
 

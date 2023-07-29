@@ -1,17 +1,23 @@
-function encode(str) {
-    console.time()
-    var buf = new ArrayBuffer(str.length * 2) // 2 bytes for each char
-    var bufView = new Uint16Array(buf)
-    for (var i = 0, strLen = str.length; i < strLen; i++) {
-        bufView[i] = str.charCodeAt(i)
-    }
-    console.timeEnd()
-    return buf
-}
+// function encode(str) {
+//     console.time()
+//     var buf = new ArrayBuffer(str.length * 2) // 2 bytes for each char
+//     var bufView = new Uint16Array(buf)
+//     for (var i = 0, strLen = str.length; i < strLen; i++) {
+//         bufView[i] = str.charCodeAt(i)
+//     }
+//     console.timeEnd()
+//     return buf
+// }
 
 function decode(buf) {
     console.time()
-    const results = String.fromCharCode(...(new Uint16Array(buf)))
+    let results = ''
+    const bufArr = new Uint16Array(buf)
+    console.log(bufArr)
+    // String.fromCharCode(...(new Uint16Array(buf)))
+    for (let index = 0; index < bufArr.length; index++) {
+        results += String.fromCodePoint(bufArr[index])
+    }
     console.timeEnd()
     return results
 }
