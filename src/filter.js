@@ -9,15 +9,30 @@
 //     return buf
 // }
 
+
+
 function decode(buf) {
     console.time()
     let results = ''
     const bufArr = new Uint16Array(buf)
-    console.log(bufArr)
-    // String.fromCharCode(...(new Uint16Array(buf)))
-    for (let index = 0; index < bufArr.length; index++) {
-        results += String.fromCodePoint(bufArr[index])
+    // const test = String.fromCharCode(...(new Uint16Array(buf)))
+    
+    
+    // let cuttedBuff = bufArr.slice(0,10)
+    // results = String.fromCharCode(...cuttedBuff)
+    // console.log(bufArr.length)
+    const gap = 10000
+    const bigIterrations = Math.floor(bufArr.length/gap)
+    const smallIterrations = bufArr.length % gap
+    for (let index = 0; index < bigIterrations*gap ; index+=gap) {
+        results += String.fromCharCode(...bufArr.slice(index, index+gap))
+        // console.log('bufArr', bufArr.slice(index, index+gap))
+        // console.log('bufArr')
     }
+    const startValue = bigIterrations * gap
+    // console.log('bufArr', bufArr.slice(startValue, startValue+smallIterrations))
+    results += String.fromCharCode(...bufArr.slice(startValue, startValue+smallIterrations))
+
     console.timeEnd()
     return results
 }
