@@ -28,13 +28,27 @@ function decode(buf) {
     return results
 }
 
+function toto (){
+    console.log('udujedf')
+}
 
 
 self.onmessage = function handleMessageFromMain(msg) {
 
-    let data = msg.data
+    let array = msg.data.array
     console.time()
-    let results = msg.data.array.filter(x=>x.includes(msg.data.query)).splice(0,10)
+    // let results = array.filter(async x => x.includes(msg.data.query)).splice(0,10)
+    const results = array.filter(function(item) {
+        if (this.count < 10 && item.includes(msg.data.query)) {
+            this.count++
+            return true
+        }
+        return false
+    }, {count: 0})
+    console.log(results)
+    
+    console.log('array[0]')
+    
     console.timeEnd()
     console.log(results)
 
